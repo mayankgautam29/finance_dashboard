@@ -59,8 +59,6 @@ export default function Signup() {
         className="bg-gray-800 p-8 rounded-xl shadow-lg w-80"
       >
         <h2 className="text-2xl font-bold mb-6 text-center">Signup</h2>
-
-        {/* Username */}
         <input
           type="text"
           name="username"
@@ -69,8 +67,6 @@ export default function Signup() {
           onChange={handleChange}
           className="w-full p-2 mb-4 rounded bg-gray-700 outline-none"
         />
-
-        {/* Email */}
         <input
           type="email"
           name="email"
@@ -79,8 +75,6 @@ export default function Signup() {
           onChange={handleChange}
           className="w-full p-2 mb-4 rounded bg-gray-700 outline-none"
         />
-
-        {/* Password */}
         <input
           type="password"
           name="password"
@@ -89,13 +83,9 @@ export default function Signup() {
           onChange={handleChange}
           className="w-full p-2 mb-4 rounded bg-gray-700 outline-none"
         />
-
-        {/* Error */}
         {error && (
           <p className="text-red-400 text-sm mb-3">{error}</p>
         )}
-
-        {/* Button */}
         <button
           type="submit"
           disabled={loading}
@@ -103,13 +93,11 @@ export default function Signup() {
         >
           {loading ? "Creating account..." : "Signup"}
         </button>
-
-        {/* Login Redirect */}
         <p className="text-sm mt-4 text-center">
           Already have an account?{" "}
           <span
             className="text-blue-400 cursor-pointer"
-            onClick={() => router.push("/login")}
+            onClick={() => router.push("/auth/login")}
           >
             Login
           </span>
