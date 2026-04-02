@@ -26,7 +26,6 @@ export default function Dashboard() {
     <div className="min-h-screen bg-black text-white p-8 space-y-8">
       <h1 className="text-2xl font-bold">Dashboard</h1>
 
-      {/* 🔥 TOP CARDS */}
       <div className="grid grid-cols-3 gap-6">
         <div className="bg-green-600 p-4 rounded-lg">
           <p>Total Income</p>
@@ -43,8 +42,6 @@ export default function Dashboard() {
           <h2 className="text-xl font-bold">₹{data.netBalance}</h2>
         </div>
       </div>
-
-      {/* 🔥 CATEGORY */}
       <div>
         <h2 className="text-lg font-semibold mb-2">Category Breakdown</h2>
         {data.categories.map((c: any) => (
@@ -54,8 +51,6 @@ export default function Dashboard() {
           </div>
         ))}
       </div>
-
-      {/* 🔥 RECENT */}
       <div>
         <h2 className="text-lg font-semibold mb-2">Recent Transactions</h2>
         {data.recent.map((r: any) => (

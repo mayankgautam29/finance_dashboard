@@ -16,17 +16,11 @@ export async function GET(req: NextRequest) {
         { status: 401 }
       );
     }
-
-    // 🔥 FIX: convert to ObjectId
     const objectUserId = new mongoose.Types.ObjectId(userId);
-
-    // 🔥 TOTAL INCOME
     const income = await Record.aggregate([
       { $match: { userId: objectUserId, type: "income" } },
       { $group: { _id: null, total: { $sum: "$amount" } } },
     ]);
-
-    // 🔥 TOTAL EXPENSE
     const expense = await Record.aggregate([
       { $match: { userId: objectUserId, type: "expense" } },
       { $group: { _id: null, total: { $sum: "$amount" } } },
@@ -35,8 +29,6 @@ export async function GET(req: NextRequest) {
     const totalIncome = income[0]?.total || 0;
     const totalExpense = expense[0]?.total || 0;
     const netBalance = totalIncome - totalExpense;
-
-    // 🔥 CATEGORY BREAKDOWN
     const categories = await Record.aggregate([
       { $match: { userId: objectUserId, type: "expense" } },
       {
@@ -46,8 +38,6 @@ export async function GET(req: NextRequest) {
         },
       },
     ]);
-
-    // 🔥 MONTHLY TRENDS
     const trends = await Record.aggregate([
       { $match: { userId: objectUserId } },
       {
@@ -69,8 +59,6 @@ export async function GET(req: NextRequest) {
       },
       { $sort: { "_id.month": 1 } },
     ]);
-
-    // 🔥 RECENT TRANSACTIONS
     const recent = await Record.find({ userId: objectUserId })
       .sort({ createdAt: -1 })
       .limit(5);
