@@ -7,13 +7,13 @@ export function middleware(request: NextRequest) {
 
   console.log("MIDDLEWARE:", pathname, token ? "✅" : "❌");
 
-  const publicRoutes = ["/login", "/signup"];
+  const publicRoutes = ["/auth/login", "/auth/signup"];
 
   const isPublic = publicRoutes.includes(pathname);
 
   // ❌ Not logged in → block everything except login/signup
   if (!token && !isPublic) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   // ❌ Logged in → block login/signup
@@ -27,8 +27,8 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/",                     // MUST include root
-    "/login",
-    "/signup",
+    "/auth/login",
+    "/auth/signup",
     "/((?!_next|favicon.ico).*)",
   ],
 };
