@@ -7,15 +7,20 @@ export function middleware(request: NextRequest) {
 
   console.log("MIDDLEWARE:", pathname, token ? "✅" : "❌");
 
-  const publicRoutes = ["/auth/login", "/auth/signup","/api/auth/login","/api/auth/signup"];
+  const publicRoutes = [
+    "/auth/login",
+    "/auth/signup",
+    "/api/auth/login",
+    "/api/auth/signup",
+  ];
 
-  const isPublic = publicRoutes.includes(pathname);
+  const isPublic = publicRoutes.some((route) => pathname.startsWith(route));
 
   if (!token && !isPublic) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
   if (token && isPublic) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return NextResponse.next();
@@ -23,9 +28,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/",
-    "/auth/login",
-    "/auth/signup",
-    "/((?!_next|favicon.ico).*)",
+    "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };
