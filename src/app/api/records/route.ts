@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
     }
 
     const { id, role } = user;
+    const roleKey = String(role).toLowerCase();
 
     const { searchParams } = new URL(req.url);
 
@@ -27,7 +28,7 @@ export async function GET(req: NextRequest) {
 
     let matchCondition: any = {};
 
-    if (role === "Viewer") {
+    if (roleKey === "viewer") {
       matchCondition.userId = new mongoose.Types.ObjectId(id);
     }
 

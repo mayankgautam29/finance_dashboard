@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 
     const user = await getRole(req);
 
-    if (!user || user.role !== "Admin") {
+    if (!user || String(user.role).toLowerCase() !== "admin") {
       return NextResponse.json(
         { error: "Forbidden" },
         { status: 403 }

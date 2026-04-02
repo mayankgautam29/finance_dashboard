@@ -76,9 +76,14 @@ export function Navbar() {
             Records
           </Link>
           {session !== null && isAdmin ? (
-            <Link href="/record/add" className={linkClass("/record/add")}>
-              Add record
-            </Link>
+            <>
+              <Link href="/users" className={linkClass("/users")}>
+                Users
+              </Link>
+              <Link href="/record/add" className={linkClass("/record/add")}>
+                Add record
+              </Link>
+            </>
           ) : null}
           {session !== null && session.loggedIn ? (
             <button

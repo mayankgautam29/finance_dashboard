@@ -1,18 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import axios from "axios";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
+  const [forbidden, setForbidden] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<any>({});
 
   const fetchUsers = async () => {
-    const res = await axios.get("/api/users", {
-      withCredentials: true,
-    });
-    setUsers(res.data.data);
+    try {
+      const res = await axios.get("/api/users", {
+        withCredentials: true,
+      });
+      setUsers(res.data.data);
+      setForbidden(false);
+    } catch (e: any) {
+      if (e.response?.status === 403) setForbidden(true);
+      setUsers([]);
+    }
   };
 
   useEffect(() => {
@@ -28,13 +36,35 @@ export default function UsersPage() {
   };
 
   const handleSave = async () => {
-    await axios.put(`/api/users/${editingId}`, editData, {
-      withCredentials: true,
-    });
-
-    setEditingId(null);
-    fetchUsers();
+    try {
+      await axios.put(`/api/users/${editingId}`, editData, {
+        withCredentials: true,
+      });
+      setEditingId(null);
+      fetchUsers();
+    } catch {
+      // 403 handled by list refetch; keep edit mode if transient error
+    }
   };
+
+  if (forbidden) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] p-8 text-white">
+        <div className="glass mx-auto max-w-lg space-y-4 text-center">
+          <h1 className="text-2xl font-semibold">Admins only</h1>
+          <p className="text-gray-400 text-sm">
+            You need an administrator account to view and edit users.
+          </p>
+          <Link
+            href="/home"
+            className="inline-block rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium hover:bg-gray-700"
+          >
+            Back to home
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white p-8">
@@ -94,7 +124,7 @@ export default function UsersPage() {
                   u.isActive ? "text-green-400" : "text-red-400"
                 }
               >
-                {u.isActive ? "Active" : "Inactive"}
+                {u.isActive !== false ? "Active" : "Inactive"}
               </span>
             )}
             <div className="flex justify-end gap-2">

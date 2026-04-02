@@ -12,7 +12,7 @@ export async function PUT(req: NextRequest, ctx: Context) {
 
     const admin = await getRole(req);
 
-    if (!admin || admin.role !== "Admin") {
+    if (!admin || String(admin.role).toLowerCase() !== "admin") {
       return NextResponse.json(
         { error: "Forbidden" },
         { status: 403 }
@@ -30,14 +30,33 @@ export async function PUT(req: NextRequest, ctx: Context) {
 
     const body = await req.json();
 
-    const updated = await User.findByIdAndUpdate(
-      id,
-      {
-        role: body.role,
-        isActive: body.isActive,
-      },
-      { new: true }
-    ).select("-password");
+    const roleMap: Record<string, string> = {
+      viewer: "Viewer",
+      analyst: "Analyst",
+      admin: "Admin",
+    };
+    const roleKey =
+      typeof body.role === "string" ? body.role.toLowerCase() : "";
+    const role =
+      roleMap[roleKey] ??
+      (["Viewer", "Analyst", "Admin"].includes(body.role) ? body.role : null);
+
+    if (!role) {
+      return NextResponse.json({ error: "Invalid role" }, { status: 400 });
+    }
+
+    const update: { role: string; isActive?: boolean } = { role };
+    if (typeof body.isActive === "boolean") {
+      update.isActive = body.isActive;
+    }
+
+    const updated = await User.findByIdAndUpdate(id, update, {
+      new: true,
+    }).select("-password");
+
+    if (!updated) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
     return NextResponse.json({
       success: true,
