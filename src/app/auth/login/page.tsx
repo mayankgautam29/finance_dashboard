@@ -43,7 +43,7 @@ export default function Login() {
         setError(err.errors[0].message);
       } else {
         setError("Login failed. Redirecting to signup...");
-        setTimeout(() => router.push("/signup"), 1500);
+        setTimeout(() => router.push("/auth/signup"), 1500);
       }
     } finally {
       setLoading(false);
