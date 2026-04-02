@@ -37,51 +37,74 @@ export default function AddRec() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-black text-white">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-gray-900 p-8 rounded-xl shadow-lg w-96 flex flex-col gap-4"
-      >
-        <h2 className="text-xl font-bold text-center">Add Record</h2>
-        <input
-          type="number"
-          placeholder="Amount"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value === "" ? "" : Number(e.target.value))}
-          className="p-2 rounded bg-gray-800 outline-none"
-          required
-        />
-        <select
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          className="p-2 rounded bg-gray-800"
-        >
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
-        </select>
-        <input
-          type="text"
-          placeholder="Category (e.g. food, rent)"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="p-2 rounded bg-gray-800 outline-none"
-          required
-        />
-        <input
-          type="text"
-          placeholder="Note (optional)"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          className="p-2 rounded bg-gray-800 outline-none"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-green-600 hover:bg-green-700 p-2 rounded font-semibold"
-        >
-          {loading ? "Adding..." : "Add Record"}
-        </button>
-      </form>
+    <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-6">
+      <div className="card w-full max-w-md">
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Add New Record
+          </h2>
+          <p className="text-gray-400 text-sm mt-1">
+            Track your income and expenses efficiently
+          </p>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="label">Amount</label>
+            <input
+              type="number"
+              placeholder="Enter amount"
+              value={amount}
+              onChange={(e) =>
+                setAmount(
+                  e.target.value === "" ? "" : Number(e.target.value)
+                )
+              }
+              className="input w-full"
+              required
+            />
+          </div>
+          <div>
+            <label className="label">Type</label>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="input w-full"
+            >
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+          </div>
+          <div>
+            <label className="label">Category</label>
+            <input
+              type="text"
+              placeholder="e.g. Food, Rent, Salary"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="input w-full"
+              required
+            />
+          </div>
+          <div>
+            <label className="label">Note</label>
+            <input
+              type="text"
+              placeholder="Optional note"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              className="input w-full"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary w-full"
+          >
+            {loading ? "Adding Record..." : "Add Record"}
+          </button>
+
+        </form>
+      </div>
     </div>
   );
 }

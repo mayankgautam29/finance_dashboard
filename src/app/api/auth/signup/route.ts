@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       throw new Error("JWT_SECRET is not defined");
     }
 
-    const { email, password, username } = await request.json();
+    const { email, password, username, role } = await request.json();
 
     const existingUser = await User.findOne({ email });
 
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       email,
       username,
       password: hashedPassword,
-      role: "viewer",
+      role: role,
     });
     const savedUser = await newUser.save();
     const { password: _, ...userWithoutPassword } = savedUser.toObject();
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "none",
       path: "/",
     });
     return response;

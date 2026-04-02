@@ -4,6 +4,89 @@
   --background: #ffffff;
   --foreground: #171717;
 }
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 20px;
+}
+.glass {
+  background: rgba(255,255,255,0.03);
+  padding: 16px;
+  border-radius: 10px;
+}
+.card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.input {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 8px 10px;
+  border-radius: 8px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #555;
+}
+.card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.input {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  padding: 10px 12px;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.input:focus {
+  border-color: #555;
+  background: #0f0f0f;
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 6px;
+}
+
+.btn-primary {
+  background: white;
+  color: black;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-primary:hover {
+  background: #e5e5e5;
+}
+
+.badge {
+  background: #1f2937;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+.input {
+  background:#1a1a1a;
+  padding:6px;
+  border-radius:6px;
+}
 
 @theme inline {
   --color-background: var(--background);

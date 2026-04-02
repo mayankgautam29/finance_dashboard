@@ -20,6 +20,7 @@ export default function Login() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -35,9 +36,8 @@ export default function Login() {
       setLoading(true);
       loginSchema.parse(formData);
       await axios.post("/api/auth/login", formData);
-      router.push("/");
+      router.push("/home");
       router.refresh();
-
     } catch (err: any) {
       if (err.name === "ZodError") {
         setError(err.errors[0].message);
@@ -51,58 +51,65 @@ export default function Login() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-900 text-white">
-      <form
-        onSubmit={onSubmit}
-        className="bg-gray-800 p-8 rounded-xl shadow-lg w-80"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+    <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-6">
+      <div className="card w-full max-w-md">
 
-        {/* Email */}
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full p-2 mb-4 rounded bg-gray-700 outline-none"
-        />
+        <div className="mb-6 text-center">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Welcome Back
+          </h2>
+          <p className="text-gray-400 text-sm mt-1">
+            Login to your finance dashboard
+          </p>
+        </div>
 
-        {/* Password */}
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full p-2 mb-4 rounded bg-gray-700 outline-none"
-        />
+        <form onSubmit={onSubmit} className="space-y-5">
 
-        {/* Error */}
-        {error && (
-          <p className="text-red-400 text-sm mb-3">{error}</p>
-        )}
+          <div>
+            <label className="label">Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              className="input w-full"
+            />
+          </div>
+          <div>
+            <label className="label">Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+              className="input w-full"
+            />
+          </div>
+          {error && (
+            <p className="text-red-400 text-sm">{error}</p>
+          )}
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary w-full"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
 
-        {/* Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 p-2 rounded font-semibold"
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-
-        {/* Signup Redirect */}
-        <p className="text-sm mt-4 text-center">
+        </form>
+        <p className="text-sm text-gray-400 mt-6 text-center">
           Don’t have an account?{" "}
           <span
-            className="text-blue-400 cursor-pointer"
-            onClick={() => router.push("/signup")}
+            className="text-white font-medium cursor-pointer hover:underline"
+            onClick={() => router.push("/auth/signup")}
           >
             Signup
           </span>
         </p>
-      </form>
+
+      </div>
     </div>
   );
 }
