@@ -98,6 +98,39 @@ export default function Login() {
             {loading ? "Logging in..." : "Login"}
           </button>
 
+          <div className="mt-8 pt-6 border-t border-white/10">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-500 mb-4 text-center">
+              Demo logins
+            </p>
+            <div className="space-y-4 text-[13px] leading-relaxed text-gray-300 font-[system-ui,-apple-system,sans-serif]">
+              <p className="text-center">
+                <span className="text-white/90 font-medium">Admin login:</span>{" "}
+                email:{" "}
+                <span className="font-mono text-gray-200 tabular-nums">
+                  adminuser4@gmail.com
+                </span>{" "}
+                pass:{" "}
+                <span className="font-mono text-gray-200">admin4123</span>
+              </p>
+              <p className="text-center">
+                <span className="text-white/90 font-medium">Analyst login:</span>{" "}
+                email:{" "}
+                <span className="font-mono text-gray-200">
+                  analystuser@gmail.com
+                </span>{" "}
+                password:{" "}
+                <span className="font-mono text-gray-200">analyst123</span>
+              </p>
+              <p className="text-center">
+                <span className="text-white/90 font-medium">Viewer:</span>{" "}
+                email:{" "}
+                <span className="font-mono text-gray-200">user1@gmail.com</span>{" "}
+                password:{" "}
+                <span className="font-mono text-gray-200">user123</span>
+              </p>
+            </div>
+          </div>
+
         </form>
         <p className="text-sm text-gray-400 mt-6 text-center">
           Don’t have an account?{" "}
