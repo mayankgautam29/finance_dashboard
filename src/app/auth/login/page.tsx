@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
-import axios from "axios";
+import apiClient from "@/lib/apiClient";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -35,7 +35,7 @@ export default function Login() {
     try {
       setLoading(true);
       loginSchema.parse(formData);
-      await axios.post("/api/auth/login", formData);
+      await apiClient.post("/api/auth/login", formData);
       router.push("/home");
       router.refresh();
     } catch (err: any) {

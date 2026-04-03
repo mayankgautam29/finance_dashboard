@@ -1,16 +1,17 @@
 "use client";
 
+import apiClient from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { z } from "zod";
-import axios from "axios";
-import { ZodError } from "zod";
+import { z, ZodError } from "zod";
+
+const ROLES = ["viewer", "analyst", "admin"] as const;
 
 const signupSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  role: z.enum(["Viewer", "Analyst", "Admin"]),
+  role: z.enum(ROLES),
 });
 
 type SignupData = z.infer<typeof signupSchema>;
@@ -22,7 +23,7 @@ export default function Signup() {
     username: "",
     email: "",
     password: "",
-    role: "Viewer",
+    role: "viewer",
   });
 
   const [error, setError] = useState("");
@@ -50,7 +51,7 @@ export default function Signup() {
       setLoading(true);
       signupSchema.parse(formData);
 
-      await axios.post("/api/auth/signup", formData);
+      await apiClient.post("/api/auth/signup", formData);
 
       router.push("/home");
       router.refresh();
@@ -58,7 +59,11 @@ export default function Signup() {
       if (err instanceof ZodError) {
         setError(err.issues[0]?.message || "Invalid input");
       } else {
-        setError(err.response?.data?.error || "Signup failed");
+        setError(
+          err.response?.data?.message ||
+            err.response?.data?.error ||
+            "Signup failed",
+        );
       }
     } finally {
       setLoading(false);
@@ -111,17 +116,20 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="label">Select Role</label>
+            <label className="label">Role</label>
+            <p className="text-gray-500 text-xs mb-2">
+              Choose viewer, analyst, or admin for this account
+            </p>
             <div className="grid grid-cols-3 gap-2">
-              {["Viewer", "Analyst", "Admin"].map((role) => (
+              {ROLES.map((role) => (
                 <button
                   type="button"
                   key={role}
-                  onClick={() =>
-                    handleRoleChange(role as SignupData["role"])
-                  }
-                  className={`role-btn ${
-                    formData.role === role ? "active-role" : ""
+                  onClick={() => handleRoleChange(role)}
+                  className={`rounded-lg border px-2 py-2.5 text-sm font-medium capitalize transition-colors ${
+                    formData.role === role
+                      ? "border-blue-500 bg-blue-600/30 text-white"
+                      : "border-gray-700 bg-[#111] text-gray-300 hover:border-gray-500"
                   }`}
                 >
                   {role}
@@ -129,9 +137,7 @@ export default function Signup() {
               ))}
             </div>
           </div>
-          {error && (
-            <p className="text-red-400 text-sm">{error}</p>
-          )}
+          {error && <p className="text-red-400 text-sm">{error}</p>}
           <button
             type="submit"
             disabled={loading}
@@ -139,7 +145,6 @@ export default function Signup() {
           >
             {loading ? "Creating account..." : "Signup"}
           </button>
-
         </form>
         <p className="text-sm text-gray-400 mt-6 text-center">
           Already have an account?{" "}
@@ -150,7 +155,6 @@ export default function Signup() {
             Login
           </span>
         </p>
-
       </div>
     </div>
   );

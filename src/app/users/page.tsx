@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "axios";
+import apiClient from "@/lib/apiClient";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -12,9 +12,7 @@ export default function UsersPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("/api/users", {
-        withCredentials: true,
-      });
+      const res = await apiClient.get("/api/users");
       setUsers(res.data.data);
       setForbidden(false);
     } catch (e: any) {
@@ -37,9 +35,7 @@ export default function UsersPage() {
 
   const handleSave = async () => {
     try {
-      await axios.put(`/api/users/${editingId}`, editData, {
-        withCredentials: true,
-      });
+      await apiClient.put(`/api/users/${editingId}`, editData);
       setEditingId(null);
       fetchUsers();
     } catch {

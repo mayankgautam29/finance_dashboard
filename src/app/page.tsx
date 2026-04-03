@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "axios";
+import apiClient from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +10,7 @@ export default function Home() {
 
   const handleLogout = async () => {
     try {
-      await axios.get("/api/auth/logout");
+      await apiClient.get("/api/logout");
       router.push("/auth/login");
       router.refresh();
     } catch (error) {

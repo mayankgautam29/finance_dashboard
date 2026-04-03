@@ -1,7 +1,8 @@
 "use client";
 
+import apiClient from "@/lib/apiClient";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import {
   LineChart,
   Line,
@@ -13,20 +14,41 @@ import {
 } from "recharts";
 
 export default function Dashboard() {
+  const router = useRouter();
   const [data, setData] = useState<any>(null);
   const [role, setRole] = useState("");
+  const [error, setError] = useState("");
 
   const fetchData = async () => {
-    const res = await axios.get("/api/dashboard", {
-      withCredentials: true,
-    });
-    setData(res.data.data);
-    setRole(res.data.role);
+    try {
+      setError("");
+      const res = await apiClient.get("/api/dashboard");
+      setData(res.data.data);
+      setRole(res.data.role);
+    } catch (e: any) {
+      if (e.response?.status === 401) {
+        router.replace("/auth/login");
+        return;
+      }
+      setError(
+        e.response?.data?.message ||
+          e.response?.data?.error ||
+          "Could not load dashboard",
+      );
+    }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  if (error) {
+    return (
+      <div className="p-10 text-white">
+        <p className="text-red-400">{error}</p>
+      </div>
+    );
+  }
 
   if (!data) return <div className="text-white p-10">Loading...</div>;
 
@@ -135,13 +157,18 @@ export default function Dashboard() {
 
       <div className="glass">
         <h2 className="text-xl mb-4">Recent Transactions</h2>
+        <div className="flex justify-between text-gray-500 text-xs mb-2 px-1">
+          <span>User</span>
+          <span>Category</span>
+          <span>Amount</span>
+        </div>
 
         {data.recent.map((r: any) => (
           <div
             key={r._id}
             className="flex justify-between py-2 border-b border-gray-800"
           >
-            <span>{r.username}</span>
+            <span className="font-medium">{r.username || "—"}</span>
             <span>{r.category}</span>
             <span
               className={

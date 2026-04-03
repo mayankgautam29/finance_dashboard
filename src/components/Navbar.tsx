@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "axios";
+import apiClient from "@/lib/apiClient";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,9 +17,7 @@ export function Navbar() {
     let cancelled = false;
     (async () => {
       try {
-        const { data } = await axios.get("/api/auth/session", {
-          withCredentials: true,
-        });
+        const { data } = await apiClient.get("/api/auth/session");
         if (!cancelled) {
           setSession({
             loggedIn: Boolean(data.loggedIn),
@@ -47,7 +45,7 @@ export function Navbar() {
   const handleLogout = async () => {
     try {
       setLoggingOut(true);
-      await axios.get("/api/logout", { withCredentials: true });
+      await apiClient.get("/api/logout");
       setSession({ loggedIn: false, role: null });
       router.push("/auth/login");
       router.refresh();

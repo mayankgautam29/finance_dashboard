@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "axios";
+import apiClient from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -10,7 +10,7 @@ export default function LogoutPage() {
   useEffect(() => {
     (async () => {
       try {
-        await axios.get("/api/logout", { withCredentials: true });
+        await apiClient.get("/api/logout");
       } finally {
         router.push("/auth/login");
         router.refresh();

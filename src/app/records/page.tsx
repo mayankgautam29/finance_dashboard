@@ -1,9 +1,11 @@
 "use client";
 
+import apiClient from "@/lib/apiClient";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 export default function RecordsPage() {
+  const router = useRouter();
   const [records, setRecords] = useState<any[]>([]);
   const [role, setRole] = useState("");
   const [search, setSearch] = useState("");
@@ -16,14 +18,21 @@ export default function RecordsPage() {
   const [editData, setEditData] = useState<any>({});
 
   const fetchRecords = async () => {
-    const res = await axios.get("/api/records", {
-      params: { search, type, category, page },
-      withCredentials: true,
-    });
+    try {
+      const res = await apiClient.get("/api/records", {
+        params: { search, type, category, page },
+      });
 
-    setRecords(res.data.data);
-    setRole(res.data.role);
-    setPages(res.data.pagination.pages);
+      setRecords(res.data.data);
+      setRole(res.data.role);
+      setPages(res.data.pagination.pages);
+    } catch (e: any) {
+      if (e.response?.status === 401) {
+        router.replace("/auth/login");
+        return;
+      }
+      console.error(e);
+    }
   };
 
   useEffect(() => {
@@ -38,14 +47,14 @@ export default function RecordsPage() {
   };
 
   const handleSave = async () => {
-    await axios.put(`/api/records/${editingId}`, editData);
+    await apiClient.put(`/api/records/${editingId}`, editData);
     setEditingId(null);
     fetchRecords();
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this record?")) return;
-    await axios.delete(`/api/records/${id}`);
+    await apiClient.delete(`/api/records/${id}`);
     fetchRecords();
   };
 
