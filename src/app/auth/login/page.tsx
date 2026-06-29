@@ -51,47 +51,46 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-6">
-      <div className="card w-full max-w-md">
-
-        <div className="mb-6 text-center">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Welcome Back
+    <div className="auth-shell">
+      <div className="auth-card">
+        <div className="mb-7 text-center">
+          <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-500/25 bg-emerald-500/10 text-lg font-bold text-emerald-400">
+            F
+          </div>
+          <h2 className="text-2xl font-semibold tracking-tight text-white">
+            Welcome back
           </h2>
-          <p className="text-gray-400 text-sm mt-1">
-            Login to your finance dashboard
+          <p className="mt-1.5 text-sm text-zinc-400">
+            Sign in to your finance dashboard
           </p>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-5">
-
           <div>
             <label className="label">Email</label>
-          <input
-            type="email"
-            name="email"
-            data-testid="login-email"
+            <input
+              type="email"
+              name="email"
+              data-testid="login-email"
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
-              className="input w-full"
+              className="input"
             />
           </div>
           <div>
             <label className="label">Password</label>
-          <input
-            type="password"
-            name="password"
-            data-testid="login-password"
+            <input
+              type="password"
+              name="password"
+              data-testid="login-password"
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
-              className="input w-full"
+              className="input"
             />
           </div>
-          {error && (
-            <p className="text-red-400 text-sm">{error}</p>
-          )}
+          {error ? <p className="text-sm text-red-400">{error}</p> : null}
           <button
             type="submit"
             data-testid="login-submit"
@@ -101,50 +100,40 @@ export default function Login() {
             {loading ? "Logging in..." : "Login"}
           </button>
 
-          <div className="mt-8 pt-6 border-t border-white/10">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-500 mb-4 text-center">
-              Demo logins
+          <div className="border-t border-white/8 pt-6">
+            <p className="mb-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+              Demo accounts
             </p>
-            <div className="space-y-4 text-[13px] leading-relaxed text-gray-300 font-[system-ui,-apple-system,sans-serif]">
+            <div className="space-y-3 rounded-xl border border-white/6 bg-black/30 p-4 text-[13px] text-zinc-300">
               <p className="text-center">
-                <span className="text-white/90 font-medium">Admin login:</span>{" "}
-                email:{" "}
-                <span className="font-mono text-gray-200 tabular-nums">
-                  adminuser4@gmail.com
-                </span>{" "}
-                pass:{" "}
-                <span className="font-mono text-gray-200">admin4123</span>
+                <span className="font-medium text-zinc-100">Admin</span>{" "}
+                <span className="font-mono text-zinc-400">adminuser4@gmail.com</span>{" "}
+                / <span className="font-mono text-zinc-400">admin4123</span>
               </p>
               <p className="text-center">
-                <span className="text-white/90 font-medium">Analyst login:</span>{" "}
-                email:{" "}
-                <span className="font-mono text-gray-200">
-                  analystuser@gmail.com
-                </span>{" "}
-                password:{" "}
-                <span className="font-mono text-gray-200">analyst123</span>
+                <span className="font-medium text-zinc-100">Analyst</span>{" "}
+                <span className="font-mono text-zinc-400">analystuser@gmail.com</span>{" "}
+                / <span className="font-mono text-zinc-400">analyst123</span>
               </p>
               <p className="text-center">
-                <span className="text-white/90 font-medium">Viewer:</span>{" "}
-                email:{" "}
-                <span className="font-mono text-gray-200">user1@gmail.com</span>{" "}
-                password:{" "}
-                <span className="font-mono text-gray-200">user123</span>
+                <span className="font-medium text-zinc-100">Viewer</span>{" "}
+                <span className="font-mono text-zinc-400">user1@gmail.com</span>{" "}
+                / <span className="font-mono text-zinc-400">user123</span>
               </p>
             </div>
           </div>
-
         </form>
-        <p className="text-sm text-gray-400 mt-6 text-center">
-          Don’t have an account?{" "}
-          <span
-            className="text-white font-medium cursor-pointer hover:underline"
+
+        <p className="mt-6 text-center text-sm text-zinc-500">
+          Don&apos;t have an account?{" "}
+          <button
+            type="button"
+            className="font-medium text-white transition hover:text-emerald-400"
             onClick={() => router.push("/auth/signup")}
           >
-            Signup
-          </span>
+            Sign up
+          </button>
         </p>
-
       </div>
     </div>
   );

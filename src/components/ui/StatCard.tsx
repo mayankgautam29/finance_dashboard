@@ -16,12 +16,23 @@ export function StatCard({
     balance: "text-blue-400",
   };
 
+  const accents = {
+    default: "",
+    income: "stat-card-income",
+    expense: "stat-card-expense",
+    balance: "stat-card-balance",
+  };
+
   return (
-    <div className="card">
-      <p className="text-sm text-gray-400">{title}</p>
-      <p className={`mt-1 text-2xl font-bold ${colors[variant]}`}>{value}</p>
+    <div className={`stat-card ${accents[variant]}`}>
+      <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+        {title}
+      </p>
+      <p className={`mt-2 text-2xl font-bold tracking-tight ${colors[variant]}`}>
+        {value}
+      </p>
       {subtitle ? (
-        <p className="mt-1 text-xs text-gray-500">{subtitle}</p>
+        <p className="mt-1.5 text-xs text-zinc-500">{subtitle}</p>
       ) : null}
     </div>
   );

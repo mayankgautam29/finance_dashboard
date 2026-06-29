@@ -2,6 +2,7 @@
 
 import apiClient from "@/lib/apiClient";
 import { Button } from "@/components/ui/Button";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { Transaction, formatCurrency } from "@/types/api";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -59,13 +60,11 @@ export default function AnalyticsPage() {
     .reduce((s, t) => s + t.amount, 0);
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8 p-6 md:p-8">
-      <div>
-        <h1 className="text-3xl font-bold">Analytics Explorer</h1>
-        <p className="mt-1 text-sm text-gray-400">
-          Filter and inspect all transactions (analyst & admin)
-        </p>
-      </div>
+    <div className="page-shell space-y-8">
+      <PageHeader
+        title="Analytics Explorer"
+        subtitle="Filter and inspect all transactions (analyst & admin)"
+      />
 
       {error ? (
         <div className="card text-red-400">{error}</div>

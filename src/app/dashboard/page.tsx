@@ -3,6 +3,7 @@
 import apiClient from "@/lib/apiClient";
 import { StatCard } from "@/components/ui/StatCard";
 import { Button } from "@/components/ui/Button";
+import { PageHeader } from "@/components/ui/PageHeader";
 import {
   DashboardSummary,
   formatCurrency,
@@ -73,19 +74,27 @@ export default function Dashboard() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-6xl p-8 text-white">
-        <p className="text-red-400">{error}</p>
-        <Button onClick={fetchData} className="mt-4">
-          Retry
-        </Button>
+      <div className="page-shell">
+        <div className="card border-red-500/20 bg-red-500/5">
+          <p className="text-red-400">{error}</p>
+          <Button onClick={fetchData} className="mt-4">
+            Retry
+          </Button>
+        </div>
       </div>
     );
   }
 
   if (loading || !data) {
     return (
-      <div className="mx-auto max-w-6xl p-8 text-gray-400">
-        Loading dashboard…
+      <div className="page-shell space-y-6">
+        <div className="skeleton h-16 w-72" />
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="skeleton h-28" />
+          <div className="skeleton h-28" />
+          <div className="skeleton h-28" />
+        </div>
+        <div className="skeleton h-80" />
       </div>
     );
   }
@@ -100,16 +109,15 @@ export default function Dashboard() {
   }));
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8 p-6 md:p-8">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold" data-testid="dashboard-title">Finance Dashboard</h1>
-          <p className="mt-1 text-sm text-gray-400">
-            Income, expenses, trends, and budget alerts
-          </p>
-        </div>
-        <span className="badge">{data.role}</span>
-      </div>
+    <div className="page-shell space-y-8">
+      <PageHeader
+        title="Finance Dashboard"
+        subtitle="Income, expenses, trends, and budget alerts"
+        badge={data.role}
+      />
+      <h1 className="sr-only" data-testid="dashboard-title">
+        Finance Dashboard
+      </h1>
 
       <div className="card flex flex-wrap items-end gap-4">
         <div>

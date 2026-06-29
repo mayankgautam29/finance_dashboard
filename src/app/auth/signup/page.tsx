@@ -49,13 +49,16 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] px-6 text-white">
-      <div className="card w-full max-w-md">
-        <div className="mb-6 text-center">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Create an Account
+    <div className="auth-shell">
+      <div className="auth-card">
+        <div className="mb-7 text-center">
+          <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-500/25 bg-emerald-500/10 text-lg font-bold text-emerald-400">
+            F
+          </div>
+          <h2 className="text-2xl font-semibold tracking-tight text-white">
+            Create an account
           </h2>
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1.5 text-sm text-zinc-400">
             New accounts start as viewers. Admins can upgrade roles later.
           </p>
         </div>
@@ -68,7 +71,7 @@ export default function Signup() {
               placeholder="yourname"
               value={formData.username}
               onChange={handleChange}
-              className="input w-full"
+              className="input"
             />
           </div>
           <div>
@@ -79,7 +82,7 @@ export default function Signup() {
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
-              className="input w-full"
+              className="input"
             />
           </div>
           <div>
@@ -90,7 +93,7 @@ export default function Signup() {
               placeholder="Minimum 6 characters"
               value={formData.password}
               onChange={handleChange}
-              className="input w-full"
+              className="input"
             />
           </div>
           {error ? <p className="text-sm text-red-400">{error}</p> : null}
@@ -98,14 +101,15 @@ export default function Signup() {
             {loading ? "Creating account…" : "Sign up"}
           </button>
         </form>
-        <p className="mt-6 text-center text-sm text-gray-400">
+        <p className="mt-6 text-center text-sm text-zinc-500">
           Already have an account?{" "}
-          <span
-            className="cursor-pointer font-medium text-white hover:underline"
+          <button
+            type="button"
+            className="font-medium text-white transition hover:text-emerald-400"
             onClick={() => router.push("/auth/login")}
           >
             Login
-          </span>
+          </button>
         </p>
       </div>
     </div>

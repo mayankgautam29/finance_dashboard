@@ -2,6 +2,7 @@
 
 import apiClient from "@/lib/apiClient";
 import { Button } from "@/components/ui/Button";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { useToast } from "@/components/Toast";
 import { Budget, currentMonth, formatCurrency } from "@/types/api";
 import { useRouter } from "next/navigation";
@@ -70,13 +71,11 @@ export default function BudgetsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 p-6 md:p-8">
-      <div>
-        <h1 className="text-3xl font-bold">Budgets</h1>
-        <p className="mt-1 text-sm text-gray-400">
-          Set monthly spending limits per category and track progress
-        </p>
-      </div>
+    <div className="page-shell mx-auto max-w-4xl space-y-8">
+      <PageHeader
+        title="Budgets"
+        subtitle="Set monthly spending limits per category and track progress"
+      />
 
       <div className="card">
         <label className="label">Month</label>

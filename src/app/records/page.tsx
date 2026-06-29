@@ -2,6 +2,7 @@
 
 import apiClient from "@/lib/apiClient";
 import { Button } from "@/components/ui/Button";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { useToast } from "@/components/Toast";
 import { RecordItem, formatCurrency } from "@/types/api";
 import { useRouter } from "next/navigation";
@@ -110,37 +111,35 @@ export default function RecordsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 md:px-8">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-semibold">Records</h1>
-          <p className="text-sm text-gray-400">
-            Search, filter, export, and manage financial entries
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="badge">{role}</span>
-          <Button onClick={handleExport}>Export CSV</Button>
-          {isAdmin ? (
-            <>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".csv"
-                className="hidden"
-                onChange={handleImport}
-              />
-              <Button
-                variant="primary"
-                disabled={importing}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                {importing ? "Importing…" : "Import CSV"}
-              </Button>
-            </>
-          ) : null}
-        </div>
-      </div>
+    <div className="page-shell">
+      <PageHeader
+        title="Records"
+        subtitle="Search, filter, export, and manage financial entries"
+        badge={role}
+        actions={
+          <>
+            <Button onClick={handleExport}>Export CSV</Button>
+            {isAdmin ? (
+              <>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".csv"
+                  className="hidden"
+                  onChange={handleImport}
+                />
+                <Button
+                  variant="primary"
+                  disabled={importing}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  {importing ? "Importing…" : "Import CSV"}
+                </Button>
+              </>
+            ) : null}
+          </>
+        }
+      />
 
       <div className="card mb-6 flex flex-wrap gap-4">
         <input
@@ -167,7 +166,7 @@ export default function RecordsPage() {
       </div>
 
       <div className="card overflow-x-auto">
-        <div className="grid min-w-[700px] grid-cols-7 gap-2 border-b border-gray-800 px-4 py-3 text-sm text-gray-400">
+        <div className="grid min-w-[700px] grid-cols-7 gap-2 border-b border-white/8 px-4 py-3 table-head">
           <span>User</span>
           <span>Amount</span>
           <span>Type</span>
@@ -182,7 +181,7 @@ export default function RecordsPage() {
           records.map((r) => (
             <div
               key={r._id}
-              className="grid min-w-[700px] grid-cols-7 items-center gap-2 border-b border-gray-800 px-4 py-3 hover:bg-white/[0.02]"
+              className="grid min-w-[700px] grid-cols-7 items-center gap-2 border-b border-white/6 px-4 py-3 row-hover"
             >
               {editingId === r._id ? (
                 <>
