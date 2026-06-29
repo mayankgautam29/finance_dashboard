@@ -103,7 +103,7 @@ export default function Dashboard() {
     <div className="mx-auto max-w-6xl space-y-8 p-6 md:p-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Finance Dashboard</h1>
+          <h1 className="text-3xl font-bold" data-testid="dashboard-title">Finance Dashboard</h1>
           <p className="mt-1 text-sm text-gray-400">
             Income, expenses, trends, and budget alerts
           </p>

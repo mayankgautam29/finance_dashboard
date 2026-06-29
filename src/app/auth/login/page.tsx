@@ -67,9 +67,10 @@ export default function Login() {
 
           <div>
             <label className="label">Email</label>
-            <input
-              type="email"
-              name="email"
+          <input
+            type="email"
+            name="email"
+            data-testid="login-email"
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
@@ -78,9 +79,10 @@ export default function Login() {
           </div>
           <div>
             <label className="label">Password</label>
-            <input
-              type="password"
-              name="password"
+          <input
+            type="password"
+            name="password"
+            data-testid="login-password"
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
@@ -92,6 +94,7 @@ export default function Login() {
           )}
           <button
             type="submit"
+            data-testid="login-submit"
             disabled={loading}
             className="btn-primary w-full"
           >

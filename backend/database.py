@@ -1,4 +1,4 @@
-from urllib.parse import unquote, urlparse
+from urllib.parse import unquote
 
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from pymongo.errors import ConfigurationError

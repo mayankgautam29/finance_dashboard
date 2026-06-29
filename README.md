@@ -1,183 +1,180 @@
-# 💰 Finance Dashboard
+# Finance Dashboard
 
-A full-stack financial management dashboard built with **Next.js**, **MongoDB**, and **Recharts** — featuring role-based access control, interactive data visualizations, and a clean, responsive UI.
+Full-stack personal finance application with role-based access, analytics, budgets, and CSV import/export.
 
-**🚀 Live Demo:** [finance-dashboard-delta-two.vercel.app](https://finance-dashboard-delta-two.vercel.app)
+**Live demo:** [finance-dashboard-delta-two.vercel.app](https://finance-dashboard-delta-two.vercel.app)
 
 ---
 
-## What is this?
+## Architecture
 
-This is a multi-user finance dashboard where different types of users (admins, analysts, and viewers) can log in and interact with financial data based on their role. It's designed to give teams a centralized place to track, visualize, and manage financial records — all in one clean interface.
+```mermaid
+flowchart TB
+  subgraph client [Browser]
+    UI[Next.js 16 App Router]
+  end
 
-Whether you're tracking income/expenses, reviewing records, or just exploring the charts, each user role gets a tailored experience with appropriate permissions.
+  subgraph vercel [Vercel]
+    FE[Next.js Frontend]
+    RW["/api/* rewrite"]
+  end
+
+  subgraph railway [Railway]
+    API[FastAPI + Uvicorn]
+    AUTH[JWT HTTP-only cookies]
+    RBAC[Role-based access]
+  end
+
+  subgraph data [Data layer]
+    MONGO[(MongoDB Atlas)]
+  end
+
+  UI --> FE
+  FE --> RW
+  RW --> API
+  API --> AUTH
+  API --> RBAC
+  API --> MONGO
+```
+
+| Layer | Stack | Responsibility |
+|-------|-------|----------------|
+| Frontend | Next.js 16, React 19, TypeScript, Tailwind v4, Recharts | UI, charts, form validation (Zod) |
+| API proxy | `next.config.ts` rewrites | Forwards `/api/*` to backend — cookies stay on Vercel origin |
+| Backend | FastAPI, Motor, Pydantic, bcrypt, python-jose | Auth, RBAC, aggregations, CSV I/O |
+| Database | MongoDB | Users, transactions (`records`), budgets |
+| CI | GitHub Actions | Ruff + pytest, TypeScript + build, Playwright E2E |
+
+### Request flow
+
+1. Browser hits Vercel (e.g. `/dashboard`).
+2. Next.js middleware checks `token` cookie; unauthenticated users go to `/auth/login`.
+3. Client calls `/api/...` on the same origin.
+4. Vercel rewrites to `BACKEND_URL` (Railway FastAPI).
+5. FastAPI validates JWT cookie, applies RBAC, queries MongoDB.
 
 ---
 
 ## Features
 
-- **Authentication System** — Secure JWT-based login and signup with cookie-based session management
-- **Role-Based Access Control** — Three distinct roles: `Admin`, `Analyst`, and `Viewer`, each with different levels of access
-- **Interactive Dashboard** — Visual charts and graphs powered by Recharts to make sense of financial data at a glance
-- **Records Management** — Add, view, and manage financial records
-- **Protected Routes** — Middleware ensures unauthenticated users are redirected to login, and already-logged-in users are redirected away from auth pages
-- **Form Validation** — Input validation using Zod to keep data clean
-- **Responsive Design** — Built with Tailwind CSS, works well across screen sizes
+- **Authentication** — Signup, login, logout with HTTP-only JWT cookies
+- **RBAC** — `viewer` (own data), `analyst` (read-all + analytics), `admin` (full CRUD + import)
+- **Dashboard** — KPIs, monthly trends, category pie chart, budget alerts, date filters
+- **Budgets** — Monthly per-category limits with progress bars
+- **Records** — Search, filter, paginate, inline admin edit
+- **Analytics** — Transaction explorer with date/type/category filters
+- **CSV** — Export (all roles, scoped); import (admin)
+- **Secure signup** — New users are always `viewer`; admins promote roles
 
 ---
 
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 16 (App Router) |
-| Language | TypeScript |
-| Database | MongoDB via Mongoose |
-| Auth | JWT + bcryptjs |
-| Charts | Recharts |
-| Styling | Tailwind CSS v4 |
-| Validation | Zod |
-| HTTP Client | Axios |
-| Deployment | Vercel |
-
----
-
-## Getting Started
-
-### Prerequisites
-
-Make sure you have the following installed:
-- **Node.js** v18 or higher
-- **npm** (comes with Node)
-- A **MongoDB** database (local or [MongoDB Atlas](https://www.mongodb.com/atlas))
-
-### Installation
-
-**1. Clone the repository**
-
-```bash
-git clone https://github.com/mayankgautam29/finance_dashboard.git
-cd finance_dashboard
-```
-
-**2. Install dependencies**
-
-```bash
-npm install
-```
-
-**3. Set up environment variables**
-
-Create a `.env.local` file in the root of the project and add the following:
-
-```env
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_super_secret_jwt_key
-```
-
-> **Note:** Never commit your `.env.local` file. It's already in `.gitignore`.
-
-**4. Run the development server**
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser — you should see the login page.
-
----
-
-## Demo Accounts
-
-Want to try it out without signing up? Use these demo credentials on the live site:
-
-| Role | Email | Password |
-|---|---|---|
-| Admin | adminuser4@gmail.com | admin4123 |
-| Analyst | analystuser@gmail.com | analyst123 |
-| Viewer | user1@gmail.com | user123 |
-
-Different roles give you different levels of access — try logging in as each one to see what changes.
-
----
-
-## Project Structure
+## Project structure
 
 ```
 finance_dashboard/
-├── src/
-│   ├── app/
-│   │   ├── auth/           # Login & signup pages
-│   │   ├── dashboard/      # Main dashboard with charts
-│   │   ├── records/        # Financial records page
-│   │   ├── home/           # Landing/home page
-│   │   └── api/            # API routes (auth, records, etc.)
-│   ├── components/         # Reusable UI components
-│   ├── lib/                # DB connection, helpers
-│   └── models/             # Mongoose models (User, Record, etc.)
-├── public/                 # Static assets
-├── middleware.ts            # Route protection logic
-├── next.config.ts
-├── tailwind.config.ts
-└── package.json
+├── src/                    # Next.js frontend (App Router)
+│   ├── app/                # Pages: dashboard, records, budgets, analytics, auth
+│   ├── components/         # Navbar, Toast, shared UI
+│   ├── lib/apiClient.ts    # Axios with credentials
+│   └── types/api.ts        # Shared TypeScript types
+├── e2e/                    # Playwright E2E tests
+├── backend/                # FastAPI API (deployed on Railway)
+│   ├── routers/            # auth, dashboard, budgets, export, transactions, users
+│   ├── tests/              # pytest suite (mongomock)
+│   └── main.py
+├── .github/workflows/ci.yml
+├── playwright.config.ts
+├── middleware.ts           # Cookie-based route protection
+└── next.config.ts          # API rewrite to BACKEND_URL
 ```
 
 ---
 
-## How Authentication Works
+## Getting started
 
-The app uses a cookie-based JWT flow:
+### Prerequisites
 
-1. User logs in → server validates credentials → issues a signed JWT stored as an HTTP cookie
-2. On every request, `middleware.ts` checks for the token cookie
-3. If no token is found → redirect to `/auth/login`
-4. If a token is found and the user tries to access login/signup → redirect to `/dashboard`
-5. API routes under `/api/auth` are always public (no token required)
+- **Node.js 20+**
+- **Python 3.12+**
+- **MongoDB** (local or Atlas)
 
-Passwords are hashed using **bcryptjs** before being stored in the database — plain text passwords are never saved.
-
----
-
-## Available Scripts
+### 1. Backend
 
 ```bash
-# Start development server with hot reload
-npm run dev
-
-# Build for production
-npm run build
-
-# Start the production server
-npm start
+cd backend
+cp .env.example .env   # set MONGODB_URI, JWT_SECRET
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
 ```
 
----
+### 2. Frontend
 
-## Deployment
+```bash
+cp .env.example .env.local   # BACKEND_URL=http://127.0.0.1:8000
+npm install
+npm run dev
+```
 
-This project is deployed on **Vercel** and works out of the box with zero extra configuration. To deploy your own copy:
-
-1. Push your code to GitHub
-2. Go to [vercel.com](https://vercel.com) and import the repository
-3. Add your environment variables (`MONGODB_URI`, `JWT_SECRET`) in the Vercel dashboard
-4. Hit deploy — that's it
-
----
-
-## Contributing
-
-Contributions are welcome! If you find a bug or have an idea for a feature:
-
-1. Fork the repo
-2. Create a new branch (`git checkout -b feature/your-feature-name`)
-3. Make your changes and commit them
-4. Push to your fork and open a Pull Request
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## License
+## Environment variables
 
-This project is open source and available under the [MIT License](LICENSE).
+### Frontend (`.env.local` / Vercel)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `BACKEND_URL` | Yes | Railway HTTPS URL (no trailing slash). **Only secret the frontend needs.** |
+
+> Do **not** put `MONGODB_URI` or `JWT_SECRET` on Vercel — they belong on the backend only.
+
+### Backend (`backend/.env` / Railway)
+
+See [`backend/.env.example`](backend/.env.example) for full list: `MONGODB_URI`, `JWT_SECRET`, `ALLOWED_ORIGINS`, `SECURE_COOKIES`, etc.
+
+---
+
+## Testing
+
+```bash
+# Backend unit/integration tests (no real MongoDB — uses mongomock)
+npm run test:backend
+
+# TypeScript check + production build
+npm run lint
+npm run build
+
+# E2E (requires MongoDB on localhost:27017)
+npm run test:e2e
+```
+
+CI runs all of the above on every push and pull request (see `.github/workflows/ci.yml`).
+
+---
+
+## Deployment (Vercel + Railway)
+
+See [`DEPLOYMENT.md`](DEPLOYMENT.md) for the full checklist.
+
+**Vercel (frontend):**
+- Root directory: repository root
+- Env: `BACKEND_URL` only
+- Framework: Next.js 16 (auto-detected)
+
+**Railway (backend):**
+- Root directory: `backend`
+- Env: `MONGODB_URI`, `JWT_SECRET`, `ALLOWED_ORIGINS` (include Vercel URL), `SECURE_COOKIES=true`
+
+---
+
+## Demo accounts
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | adminuser4@gmail.com | admin4123 |
+| Analyst | analystuser@gmail.com | analyst123 |
+| Viewer | user1@gmail.com | user123 |
 
 ---
 
