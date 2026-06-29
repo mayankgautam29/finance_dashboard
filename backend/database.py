@@ -46,6 +46,10 @@ async def connect_db() -> None:
     await db[settings.users_collection].create_index("email", unique=True)
     await db[settings.transactions_collection].create_index("userId")
     await db[settings.transactions_collection].create_index([("date", -1)])
+    await db[settings.budgets_collection].create_index(
+        [("userId", 1), ("category", 1), ("month", 1)],
+        unique=True,
+    )
 
 
 async def close_db() -> None:

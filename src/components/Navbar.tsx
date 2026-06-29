@@ -33,7 +33,9 @@ export function Navbar() {
     };
   }, [pathname]);
 
-  const isAdmin = session?.role?.toLowerCase() === "admin";
+  const role = session?.role?.toLowerCase() ?? "";
+  const isAdmin = role === "admin";
+  const isAnalystOrAdmin = role === "analyst" || isAdmin;
 
   const linkClass = (href: string) =>
     `rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
@@ -60,7 +62,10 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0a0a]/95 backdrop-blur-md">
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-        <Link href="/home" className="text-lg font-semibold tracking-tight text-white">
+        <Link
+          href="/home"
+          className="text-lg font-semibold tracking-tight text-white"
+        >
           Finance
         </Link>
         <div className="flex flex-wrap items-center gap-1">
@@ -73,12 +78,20 @@ export function Navbar() {
           <Link href="/records" className={linkClass("/records")}>
             Records
           </Link>
+          <Link href="/budgets" className={linkClass("/budgets")}>
+            Budgets
+          </Link>
+          {session !== null && isAnalystOrAdmin ? (
+            <Link href="/analytics" className={linkClass("/analytics")}>
+              Analytics
+            </Link>
+          ) : null}
           {session !== null && isAdmin ? (
             <>
               <Link href="/users" className={linkClass("/users")}>
                 Users
               </Link>
-              <Link href="/record/add" className={linkClass("/record/add")}>
+              <Link href="/records/add" className={linkClass("/records/add")}>
                 Add record
               </Link>
             </>
@@ -88,7 +101,7 @@ export function Navbar() {
               type="button"
               onClick={handleLogout}
               disabled={loggingOut}
-              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 text-gray-400 hover:bg-white/5 hover:text-white`}
+              className="rounded-lg px-3 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-white/5 hover:text-white disabled:opacity-50"
             >
               {loggingOut ? "Logging out…" : "Logout"}
             </button>

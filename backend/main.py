@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 
 from config import settings
 from database import close_db, connect_db
-from routers import auth, dashboard, legacy, transactions, users
+from routers import auth, budgets, dashboard, export, legacy, transactions, users
 
 
 def _error_body(detail):
@@ -59,8 +59,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/health")
+async def health():
+    return {"status": "ok", "service": "finance-dashboard-api"}
+
+
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(transactions.router, prefix="/api/transactions", tags=["transactions"])
 app.include_router(dashboard.router, prefix="/api/dashboard", tags=["dashboard"])
+app.include_router(budgets.router, prefix="/api/budgets", tags=["budgets"])
+app.include_router(export.router, prefix="/api/export", tags=["export"])
 app.include_router(users.router, prefix="/api/users", tags=["users"])
 app.include_router(legacy.router, prefix="/api", tags=["legacy"])

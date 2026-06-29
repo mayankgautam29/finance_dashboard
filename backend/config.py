@@ -22,6 +22,7 @@ class Settings(BaseSettings):
 
     users_collection: str = "users"
     transactions_collection: str = "records"
+    budgets_collection: str = "budgets"
 
     @property
     def cors_origins(self) -> List[str]:

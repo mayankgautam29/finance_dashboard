@@ -5,65 +5,43 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { z, ZodError } from "zod";
 
-const ROLES = ["viewer", "analyst", "admin"] as const;
-
 const signupSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  role: z.enum(ROLES),
 });
 
 type SignupData = z.infer<typeof signupSchema>;
 
 export default function Signup() {
   const router = useRouter();
-
   const [formData, setFormData] = useState<SignupData>({
     username: "",
     email: "",
     password: "",
-    role: "viewer",
   });
-
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleRoleChange = (role: SignupData["role"]) => {
-    setFormData({
-      ...formData,
-      role,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
     try {
       setLoading(true);
       signupSchema.parse(formData);
-
       await apiClient.post("/api/auth/signup", formData);
-
       router.push("/home");
       router.refresh();
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err instanceof ZodError) {
         setError(err.issues[0]?.message || "Invalid input");
       } else {
-        setError(
-          err.response?.data?.message ||
-            err.response?.data?.error ||
-            "Signup failed",
-        );
+        const e = err as { response?: { data?: { message?: string } } };
+        setError(e.response?.data?.message || "Signup failed");
       }
     } finally {
       setLoading(false);
@@ -71,14 +49,14 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-6">
+    <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] px-6 text-white">
       <div className="card w-full max-w-md">
         <div className="mb-6 text-center">
           <h2 className="text-2xl font-semibold tracking-tight">
             Create an Account
           </h2>
-          <p className="text-gray-400 text-sm mt-1">
-            Start managing your finances smarter
+          <p className="mt-1 text-sm text-gray-400">
+            New accounts start as viewers. Admins can upgrade roles later.
           </p>
         </div>
         <form onSubmit={onSubmit} className="space-y-5">
@@ -115,41 +93,15 @@ export default function Signup() {
               className="input w-full"
             />
           </div>
-          <div>
-            <label className="label">Role</label>
-            <p className="text-gray-500 text-xs mb-2">
-              Choose viewer, analyst, or admin for this account
-            </p>
-            <div className="grid grid-cols-3 gap-2">
-              {ROLES.map((role) => (
-                <button
-                  type="button"
-                  key={role}
-                  onClick={() => handleRoleChange(role)}
-                  className={`rounded-lg border px-2 py-2.5 text-sm font-medium capitalize transition-colors ${
-                    formData.role === role
-                      ? "border-blue-500 bg-blue-600/30 text-white"
-                      : "border-gray-700 bg-[#111] text-gray-300 hover:border-gray-500"
-                  }`}
-                >
-                  {role}
-                </button>
-              ))}
-            </div>
-          </div>
-          {error && <p className="text-red-400 text-sm">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full"
-          >
-            {loading ? "Creating account..." : "Signup"}
+          {error ? <p className="text-sm text-red-400">{error}</p> : null}
+          <button type="submit" disabled={loading} className="btn-primary w-full">
+            {loading ? "Creating account…" : "Sign up"}
           </button>
         </form>
-        <p className="text-sm text-gray-400 mt-6 text-center">
+        <p className="mt-6 text-center text-sm text-gray-400">
           Already have an account?{" "}
           <span
-            className="text-white font-medium cursor-pointer hover:underline"
+            className="cursor-pointer font-medium text-white hover:underline"
             onClick={() => router.push("/auth/login")}
           >
             Login

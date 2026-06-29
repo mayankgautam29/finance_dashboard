@@ -5,14 +5,13 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const token = request.cookies.get("token")?.value;
 
-  console.log("MIDDLEWARE:", pathname, token ? "✅" : "❌");
   if (pathname.startsWith("/api/auth")) {
     return NextResponse.next();
   }
 
   const publicPages = ["/auth/login", "/auth/signup"];
   const isPublicPage = publicPages.some((route) =>
-    pathname.startsWith(route)
+    pathname.startsWith(route),
   );
 
   if (isPublicPage) {
@@ -27,8 +26,7 @@ export function middleware(request: NextRequest) {
   }
   return NextResponse.next();
 }
+
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };

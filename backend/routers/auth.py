@@ -90,7 +90,8 @@ async def signup(body: SignupBody, response: Response):
         )
 
     now = datetime.now(timezone.utc)
-    chosen_role = _normalize_signup_role(body.role)
+    # New signups are always viewers; admins promote roles via user management.
+    chosen_role = "viewer"
     doc = {
         "name": body.name,
         "username": body.name,
